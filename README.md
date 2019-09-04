@@ -83,7 +83,7 @@ DS_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----
 ## Run the examples
 
 ````
-python AWSWorker.py
+python aws_worker.py
 ````
 ## Testing
 Configure a DocuSign Connect subscription to send notifications to
