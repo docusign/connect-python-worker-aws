@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 from process_notification import process
 from jwt_auth import *
-from DSConfig import ds_config
+from ds_config_files import ds_config
 
 sqs = boto3.client('sqs', region_name=ds_config("QUEUE_REGION"), aws_access_key_id = ds_config("AWS_ACCOUNT"), aws_secret_access_key = ds_config("AWS_SECRET"))
 checkLogQ = queue.Queue()

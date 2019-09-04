@@ -6,7 +6,7 @@ import sys
 import subprocess
 from datetime import datetime
 from jwt_auth import *
-from DSConfig import ds_config
+from ds_config_files import ds_config
 from docusign_esign import EnvelopesApi, ApiException
 
 current_directory = os.getcwd()

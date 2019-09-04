@@ -7,7 +7,7 @@ import base64
 from pathlib import Path
 from datetime import datetime, timedelta
 from process_notification import current_directory
-from DSConfig import ds_config
+from ds_config_files import ds_config
 
 class RunTest(unittest.TestCase):
 

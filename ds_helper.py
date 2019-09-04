@@ -1,11 +1,8 @@
 import os
 import tempfile
 from pprint import pprint
-
+from ds_config_files import *
 APP_PATH = os.path.dirname(os.path.abspath(__file__))
-
-from ds_config import DSConfig
-
 
 class DSHelper:
     def __init__(self):
@@ -39,6 +36,6 @@ class DSHelper:
         """
         tmp_file = tempfile.NamedTemporaryFile(mode='w+b', suffix=file_suffix)
         f = open(tmp_file.name, "w+")
-        f.write(DSConfig.get_key("DS_PRIVATE_KEY"))
+        f.write(ds_config("DS_PRIVATE_KEY"))
         f.close()
         return tmp_file

@@ -1,10 +1,9 @@
 import time
 import base64
-
 import docusign_esign as docusign
 from docusign_esign import EnvelopesApi, ApiException
 from datetime import datetime, timedelta
-from DSConfig import ds_config, aud
+from ds_config_files import ds_config, aud
 #from .auth.oauth import OAuthUserInfo, OAuthToken, OAuth, Account, Organization, Link
 
 TOKEN_REPLACEMENT_IN_SECONDS = 10 * 60
