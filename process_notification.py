@@ -108,6 +108,7 @@ def processTest(test):
     # Exit the program if BREAK_TEST equals to true or if orderNumber contains "/break"
     if(ds_config("ENABLE_BREAK_TEST") == "True" and "/break" in ("" + test)):
         print("{} BREAKING worker test!".format(datetime.now()))
+        sys.exit(2)
 
     print("{} Processing test value {}".format(datetime.now(), test))
 
