@@ -77,6 +77,7 @@ def process(test, xml):
 # Creates a new file that contains the envelopeId and orderNumber
 def saveDoc(envelopeId, orderNumber):
     try:
+        # api_client object created when checkToken() function was called in aws_worker
         api_client.set_default_header("Authorization", "Bearer " + api_client.token)
         accountID = get_account_id()
         envelope_api = EnvelopesApi(api_client)
