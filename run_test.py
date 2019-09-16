@@ -42,8 +42,8 @@ class RunTest(unittest.TestCase):
 
     @classmethod
     def showStatus(cls):
-        rate = int(round(100.0 * RunTest.successes) / (RunTest.enqueueErrors + RunTest.dequeueErrors + RunTest.successes))
-        print("#### Test statistics: {} ({}%) successes, {} enqueue errors, {} dequeue errors.".format(RunTest.successes, rate, RunTest.enqueueErrors, RunTest.dequeueErrors))
+        rate = (100.0 * RunTest.successes) / (RunTest.enqueueErrors + RunTest.dequeueErrors + RunTest.successes)
+        print("#### Test statistics: {} ({}%) successes, {} enqueue errors, {} dequeue errors.".format(RunTest.successes, ("%.2f" % rate), RunTest.enqueueErrors, RunTest.dequeueErrors))
 
     @classmethod       
     def doTest(cls):
