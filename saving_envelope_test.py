@@ -4,7 +4,7 @@ import os
 from process_notification import current_directory
 from create_envelope import *
 
-class SendEnvelope(unittest.TestCase):
+class SaveEnvelope(unittest.TestCase):
     @classmethod
     def test_send(cls):
         try:
@@ -12,7 +12,7 @@ class SendEnvelope(unittest.TestCase):
             "It takes about 15 seconds for DocuSign to process the envelope request...")
             result = send_envelope()
             print(f"Envelope status: {result.status}. Envelope ID: {result.envelope_id}")
-            SendEnvelope.created()
+            SaveEnvelope.created()
 
         except IOError as e:
             print(f"Could not open the file: {e}")

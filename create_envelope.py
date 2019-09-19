@@ -35,7 +35,7 @@ def send_envelope():
 
     # create the envelope definition
     env = EnvelopeDefinition(
-        email_subject='Please sign this document set'
+        email_subject='Document sent from the Test Mode'
     )
     doc1_b64 = base64.b64encode(
         bytes(create_document1(args), 'utf-8')).decode('ascii')
