@@ -14,7 +14,7 @@ current_directory = os.getcwd()
 # Process the notification message
 def process(test, xml):
     # Send the message to the test mode
-    if(not test == ""):
+    if(test > 0):
         processTest(test)
 
     # In test mode there is no xml sting, should be checked before trying to parse it
@@ -91,7 +91,7 @@ def saveDoc(envelopeId, orderNumber):
             if(not os.path.exists(output_directory)):
                 print("{} Failed to create directory".format(datetime.now()))
 
-        filePath = current_directory + "\\output" + "\\" + ds_config("OUTPUT_FILE_PREFIX") + orderNumber + ".pdf"
+        filePath = os.path.join(current_directory, "output",  ds_config("OUTPUT_FILE_PREFIX") + orderNumber + ".pdf")
         # Save the results file in the output directory and change the name of the file
         os.rename(results_file,filePath)
         
@@ -111,7 +111,7 @@ def processTest(test):
         print("{} BREAKING worker test!".format(datetime.now()))
         sys.exit(2)
 
-    print("{} Processing test value {}".format(datetime.now(), test))
+    print("{} Processing test value {}".format(datetime.now(), str(test)))
 
     # Create the test directory if needed
     test_directory = os.path.join(current_directory, r'test_messages')
@@ -122,8 +122,8 @@ def processTest(test):
 
     # First shuffle test1 to test2 (if it exists) and so on
     for i in range(9,0,-1):
-        old_File_path = test_directory + "\\test" + str(i) + ".txt"
-        new_File_path = test_directory + "\\test" + str(i+1) + ".txt"
+        old_File_path = os.path.join(test_directory, "test" + str(i) + ".txt")
+        new_File_path = os.path.join(test_directory, "test" + str(i+1) + ".txt")
         # If the old file exists
         if(os.path.exists(old_File_path)):
             # If the new file exists - remove it 
@@ -133,7 +133,7 @@ def processTest(test):
             os.rename(old_File_path, new_File_path)
 
     # The new test message will be placed in test1 - creating new file
-    newFile= open(test_directory + "\\test1.txt","w+")
-    newFile.write(test)
+    newFile= open(os.path.join(test_directory, "test1.txt"), "w+")
+    newFile.write(str(test))
     print("{} New file created".format(datetime.now()))
     newFile.close
