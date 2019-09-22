@@ -25,7 +25,7 @@ def listenForever():
     while(True):
         global restart
         if(restart):
-            print("{} Starting queue worker".format(datetime.now()))
+            print("{} Starting queue worker".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
             restart = False
             # Start the queue worker
             startQueue()
@@ -36,9 +36,9 @@ def listenForever():
 def testToken():
     try:
         if(ds_config("DS_CLIENT_ID") == "{CLIENT_ID}"):
-            print("Problem: you need to configure this example, either via environment variables (recommended)\n"
+            print("{} Problem: you need to configure this example, either via environment variables (recommended)\n"
                 "or via the ds_configuration.js file.\n"
-                "See the README file for more information\n")
+                "See the README file for more information\n".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
 
         check_token()
 
@@ -67,7 +67,7 @@ def testToken():
 
     # Not an API problem
     except Exception as e:
-        print("{} {}".format(datetime.now(), e))
+        print("{} {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), e))
 
 # Receive and wait for messages from queue      
 def startQueue():
@@ -97,13 +97,13 @@ def startQueue():
             # Receive messages from queue, maximum waits for 20 seconds for message
             # receive_request - contain all the queue messages
             receive_request = (sqs.receive_message(QueueUrl=ds_config("QUEUE_URL"), WaitTimeSeconds=20, MaxNumberOfMessages=10)).get("Messages")
-            addCheckLogQ("{} Awaiting a message...".format(datetime.now()))
+            addCheckLogQ("{} Awaiting a message...".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
             # If receive_request is not None (when message is received)
             if(receive_request is not None):
                 msgCount = len(receive_request)
             else:
                 msgCount=0
-            addCheckLogQ("{} found {} message(s)".format(datetime.now(), msgCount))
+            addCheckLogQ("{} found {} message(s)".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), msgCount))
             # If at least one message has been received
             if(msgCount):
                 printCheckLogQ()
@@ -113,7 +113,7 @@ def startQueue():
     # Catches all types of errors that may occur during the program
     except Exception as e:
         printCheckLogQ()
-        print("{} Queue receive error: {}".format(datetime.now(), e))
+        print("{} Queue receive error: {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), e))
         time.sleep(5)
         # Restart the program
         global restart
@@ -123,7 +123,7 @@ def startQueue():
 # See https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/servicebus/service-bus#register-message-handler
 def messageHandler(message):
     if(ds_config("DEBUG") == "True"):
-        print("{} Processing message id: {}".format(datetime.now(), message["MessageId"]))
+        print("{} Processing message id: {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), message["MessageId"]))
 
     try:
         # Creates a Json object from the message body
@@ -137,7 +137,7 @@ def messageHandler(message):
         xml = body["xml"]
         process(test, xml)   
     else:
-        print("{} Null or bad body in message id {}. Ignoring.".format(datetime.now(), message["MessageId"]))
+        print("{} Null or bad body in message id {}. Ignoring.".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), message["MessageId"]))
         
     # Delete received message from queue
     sqs.delete_message(QueueUrl=ds_config("QUEUE_URL"),ReceiptHandle=message["ReceiptHandle"])
