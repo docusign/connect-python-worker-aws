@@ -4,11 +4,10 @@ import boto3
 import json
 import queue
 import sys
-from datetime import datetime
+from date_pretty import date
 from process_notification import process
 from jwt_auth import *
 from ds_config_files import ds_config
-
 sqs = boto3.client('sqs', region_name=ds_config("QUEUE_REGION"), aws_access_key_id = ds_config("AWS_ACCOUNT"), aws_secret_access_key = ds_config("AWS_SECRET"))
 checkLogQ = queue.Queue()
 restart = True
@@ -25,7 +24,7 @@ def listenForever():
     while(True):
         global restart
         if(restart):
-            print("{} Starting queue worker".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+            print(date() + "Starting queue worker")
             restart = False
             # Start the queue worker
             startQueue()
@@ -36,9 +35,9 @@ def listenForever():
 def testToken():
     try:
         if(ds_config("DS_CLIENT_ID") == "{CLIENT_ID}"):
-            print("{} Problem: you need to configure this example, either via environment variables (recommended)\n"
+            print(date() + "Problem: you need to configure this example, either via environment variables (recommended)\n"
                 "or via the ds_configuration.js file.\n"
-                "See the README file for more information\n".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+                "See the README file for more information\n")
 
         check_token()
 
@@ -67,7 +66,7 @@ def testToken():
 
     # Not an API problem
     except Exception as e:
-        print("{} {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), e))
+        print(date() + e)
 
 # Receive and wait for messages from queue      
 def startQueue():
@@ -92,18 +91,17 @@ def startQueue():
             print(checkLogQ.get())
 
     try:
-        
         while(True):
             # Receive messages from queue, maximum waits for 20 seconds for message
             # receive_request - contain all the queue messages
             receive_request = (sqs.receive_message(QueueUrl=ds_config("QUEUE_URL"), WaitTimeSeconds=20, MaxNumberOfMessages=10)).get("Messages")
-            addCheckLogQ("{} Awaiting a message...".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+            addCheckLogQ(date() +"Awaiting a message...")
             # If receive_request is not None (when message is received)
             if(receive_request is not None):
                 msgCount = len(receive_request)
             else:
                 msgCount=0
-            addCheckLogQ("{} found {} message(s)".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), msgCount))
+            addCheckLogQ(date() +"found {} message(s)".format(msgCount))
             # If at least one message has been received
             if(msgCount):
                 printCheckLogQ()
@@ -113,7 +111,7 @@ def startQueue():
     # Catches all types of errors that may occur during the program
     except Exception as e:
         printCheckLogQ()
-        print("{} Queue receive error: {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), e))
+        print(date() + "Queue receive error: {}".format(e))
         time.sleep(5)
         # Restart the program
         global restart
@@ -123,7 +121,7 @@ def startQueue():
 # See https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/servicebus/service-bus#register-message-handler
 def messageHandler(message):
     if(ds_config("DEBUG") == "True"):
-        print("{} Processing message id: {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), message["MessageId"]))
+        print(date() + "Processing message id: {}".format(message["MessageId"]))
 
     try:
         # Creates a Json object from the message body
@@ -137,7 +135,7 @@ def messageHandler(message):
         xml = body["xml"]
         process(test, xml)   
     else:
-        print("{} Null or bad body in message id {}. Ignoring.".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), message["MessageId"]))
+        print(date() + "Null or bad body in message id {}. Ignoring.".format(message["MessageId"]))
         
     # Delete received message from queue
     sqs.delete_message(QueueUrl=ds_config("QUEUE_URL"),ReceiptHandle=message["ReceiptHandle"])

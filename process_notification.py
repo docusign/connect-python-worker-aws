@@ -4,17 +4,17 @@ import re
 import os
 import sys
 import subprocess
-from datetime import datetime
 from jwt_auth import *
 from ds_config_files import ds_config
 from docusign_esign import EnvelopesApi, ApiException
+from date_pretty import date
 
 current_directory = os.getcwd()
 
 # Process the notification message
 def process(test, xml):
     # Send the message to the test mode
-    if(test > 0):
+    if(not test == ""):
         processTest(test)
 
     # In test mode there is no xml sting, should be checked before trying to parse it
@@ -57,12 +57,12 @@ def process(test, xml):
             if(not status == "Completed"):
                 ignore = True
                 if(ds_config("DEBUG") == "True"):
-                    print("{} IGNORED: envelope status is {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), status))
+                    print(date() +"IGNORED: envelope status is {}".format(status))
             
         if(orderNumber == None or orderNumber == ""):
             ignore = True
             if(ds_config("DEBUG") == "True"):
-                print("{} IGNORED: envelope does not have a {} envelope custom field.".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), ds_config("ENVELOPE_CUSTOM_FIELD")))
+                print(date() +"IGNORED: envelope does not have a {} envelope custom field.".format(ds_config("ENVELOPE_CUSTOM_FIELD")))
             
         # Step 3. (Future) Check that this is not a duplicate notification
         # The queuing system delivers on an "at least once" basis. So there is a 
@@ -89,7 +89,7 @@ def saveDoc(envelopeId, orderNumber):
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
             if(not os.path.exists(output_directory)):
-                print("{} Failed to create directory".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+                print(date() + "Failed to create directory")
 
         filePath = os.path.join(current_directory, "output",  ds_config("OUTPUT_FILE_PREFIX") + orderNumber + ".pdf")
         # Save the results file in the output directory and change the name of the file
@@ -97,28 +97,28 @@ def saveDoc(envelopeId, orderNumber):
         
     # Create a file
     except ApiException as e:
-        print("{} API exception: {}. saveDoc error".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), e))
+        print(date() + "API exception: {}. saveDoc error".format(e))
 
         # Catch exception while fetching and saving docs for envelope
     except Exception as e:
-        print("{} Error while fetching and saving docs for envelope {}, order {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), envelopeId, orderNumber))
-        print("{} saveDoc error {}".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S'), e))
+        print(date() + "Error while fetching and saving docs for envelope {}, order {}".format(envelopeId, orderNumber))
+        print(date() + "saveDoc error {}".format(e))
 
 # Process test details into files
 def processTest(test):
     # Exit the program if BREAK_TEST equals to true or if orderNumber contains "/break"
     if(ds_config("ENABLE_BREAK_TEST") == "True" and "/break" in ("" + test)):
-        print("{} BREAKING worker test!".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+        print(date() +"BREAKING worker test!")
         sys.exit(2)
 
-    print("{} Processing test value {}".format(datetime.now(), str(test)))
+    print(date() + "Processing test value {}".format(test))
 
     # Create the test directory if needed
     test_directory = os.path.join(current_directory, r'test_messages')
     if not os.path.exists(test_directory):
         os.makedirs(test_directory)
         if(not os.path.exists(test_directory)):
-            print("{} Failed to create directory".format(datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+            print(date() + "Failed to create directory")
 
     # First shuffle test1 to test2 (if it exists) and so on
     for i in range(9,0,-1):
@@ -134,6 +134,6 @@ def processTest(test):
 
     # The new test message will be placed in test1 - creating new file
     newFile= open(os.path.join(test_directory, "test1.txt"), "w+")
-    newFile.write(str(test))
-    print("{} New file created".format(datetime.now()))
+    newFile.write(test)
+    print(date() + "New file created")
     newFile.close

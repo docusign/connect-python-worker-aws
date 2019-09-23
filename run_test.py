@@ -1,5 +1,4 @@
 import unittest
-import main
 import time
 import os
 import urllib.request
@@ -8,6 +7,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from process_notification import current_directory
 from ds_config_files import ds_config
+from date_pretty import date
 
 class RunTest(unittest.TestCase):
 
@@ -24,9 +24,9 @@ class RunTest(unittest.TestCase):
     def test_run(cls):
         for index in range(8):
             RunTest.timeChecks.append(datetime.now() + timedelta(hours=index+1))
-        print(str(datetime.now()) + " Starting")
+        print(date() + "Starting")
         RunTest.doTests()
-        print(str(datetime.now())  + " Done")
+        print(date()  + "Done")
 
     @classmethod
     def doTests(cls):
@@ -68,7 +68,7 @@ class RunTest(unittest.TestCase):
             file_data=""
             try:
                 # The path of the files created of Test mode
-                testOutputDirPath = current_directory + "\\test_messages\\test" + str(i) + ".txt"
+                testOutputDirPath = os.path.join(current_directory, "test_messages",  "test" + str(i) + ".txt")
                 test_file = Path(testOutputDirPath) 
                 if test_file.is_file():
                     with open(test_file) as f:

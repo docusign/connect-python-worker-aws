@@ -1,4 +1,5 @@
 output/
+test_messages/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
