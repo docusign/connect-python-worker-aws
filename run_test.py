@@ -115,7 +115,7 @@ class RunTest(unittest.TestCase):
     def send1(cls, test):
         try:
             time.sleep(0.5)
-            url = ds_config("TEST_ENQUEUE_URL") + "?test=" + test
+            url = ds_config("ENQUEUE_URL") + "?test=" + test
             request = urllib.request.Request(url)
             request.method = "GET"
             auth = RunTest.authObject()
