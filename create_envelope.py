@@ -4,7 +4,6 @@ import base64
 from os import path
 from docusign_esign import EnvelopesApi, EnvelopeDefinition, Signer, CarbonCopy, SignHere, Tabs, Recipients, Document, TextCustomField, CustomFields
 from ds_config_files import *
-from ds_helper import *
 from jwt_auth import *
 
 demo_docs_path = path.abspath(path.join(path.dirname(path.realpath(__file__)), 'data'))
