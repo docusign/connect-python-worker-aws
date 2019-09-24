@@ -30,24 +30,36 @@ SDK libraries for C#, Java, Node.js, Python, Ruby, C++, and Go.
 
 ## Installation
 
-This example requires Python v3.6 or later.
-The SDK itself works with Python v2.7 or later.
+### Introduction
+First, install the **Lambda listener** on AWS and set up the SQS queue.
 
-1. Install the example 
+Then set up this code example to receive and process the messages
+received via the SQS queue.
+
+### Installing the Lambda Listener
+
+Install the example 
    [Connect listener for AWS](https://github.com/docusign/connect-node-listener-aws)
    on AWS.
    At the end of this step, you will have the
-   `Queue URL`, `Queue Region` and `Enqueue url`.
+   `Queue URL`, `Queue Region` and `Enqueue url` that you need for the next step.
 
-2. Download or clone this repository. Then:
+### Installing the worker (this repository)
 
-````
-cd connect-python-worker-aws
-pip install docusign_esign
-````
-3. Using AWS IAM, create an IAM `User` with access to your SQS queue.
+#### Requirements
 
-4. Configure the **ds_config.ini** file: [ds_config.ini](ds_config.ini)
+This example requires Python v3.6 or later.
+The SDK itself works with Python v2.7 or later.
+
+1. Download or clone this repository. Then:
+
+    ````
+    cd connect-python-worker-aws
+    pip install docusign_esign
+    ````
+1. Using AWS IAM, create an IAM `User` with access to your SQS queue.
+
+1. Configure the **ds_config.ini** file: [ds_config.ini](ds_config.ini)
     The application uses the OAuth JWT Grant flow.
 
     If consent has not been granted to the application by
@@ -60,7 +72,7 @@ pip install docusign_esign
     update the `oAuthConsentRedirectURI` setting
     in the ds_config.ini file.
 
-5.  Creating the Integration Key
+1.  Creating the Integration Key
     Your DocuSign Integration Key must be configured for a JWT OAuth authentication flow:
     * Create a public/private key pair for the key. Store the private key
     in a secure location. You can use a file or a key vault.
