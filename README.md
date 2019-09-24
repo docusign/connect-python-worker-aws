@@ -87,10 +87,11 @@ DS_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----
 ````  
 
 ## Run the examples
-
 ````
 python aws_worker.py
 ````
+you can also right click on the file and choose the `Run Python File in Terminal` option.
+
 ## Testing
 Configure a DocuSign Connect subscription to send notifications to
 the Cloud Function. Create / complete a DocuSign envelope.
@@ -105,6 +106,16 @@ The envelope **must include an Envelope Custom Field named "Sales order".**
   envelope's documents will only be downloaded if
   the envelope is `complete` and includes a 
   `Sales order` custom field.
+
+## Unit Tests
+Includes three types of testing:
+* [SavingEnvelopeTest.cs](UnitTests/SavingEnvelopeTest.cs) allow you to send an envelope to your amazon sqs from the program. The envelope is saved at `output` directory although its status is `sent`.
+
+* [RunTest.cs](UnitTests/RunTest.cs) divides into two types of tests, both submits tests for 8 hours and updates every hour about the amount of successes or failures that occurred in that hour, the differences between the two are:
+    * `few` - Submits 5 tests every hour.
+    * `many` - Submits many tests every hour.
+
+In order to run the tests you need to split the terminal in two inside Visual Studio Code, In the first terminal run the connect-csharp-worker-aws program. In the second terminal choose the wanted test. You can see above at ` Run the examples` part how the files can be run.
 
 ## Support, Contributions, License
 

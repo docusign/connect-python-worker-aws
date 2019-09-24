@@ -113,7 +113,7 @@ def send_envelope():
     # To request that the envelope be created as a draft, set to "created"
     env.status = "sent"
 
-    #Salse order
+    # Creates the Salse order Custom Field
     text_custom_field = TextCustomField(name='Sales order', value='Test_Mode', show='true',
                                     required='true')
     custom_fields = CustomFields(text_custom_fields=[text_custom_field])
