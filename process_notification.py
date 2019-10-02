@@ -1,9 +1,10 @@
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET # Guarding against an XML external entity injection attack
 import docusign_esign as docusign
 import re
 import os
 import sys
 import subprocess
+import re
 from jwt_auth import *
 from ds_config_files import ds_config
 from docusign_esign import EnvelopesApi, ApiException
@@ -13,9 +14,19 @@ current_directory = os.getcwd()
 
 # Process the notification message
 def process(test, xml):
-    # Send the message to the test mode
-    if(not test == ""):
-        processTest(test)
+    # Guarding against injection attacks
+    # Check the incoming test variable to ensure that it ONLY contains the expected data (empty string "", "/break" or integers string)
+    # matcher equals true when it finds wrong input
+    pattern = "[^0-9]"
+    matcher = re.search(pattern, test)
+    validInput = test == "" or test == "/break" or not matcher
+    if(validInput):
+        if(not test == ""):
+            # Message from test mode
+            processTest(test)
+    else:
+        print(date() +"Wrong test value: {}".format(test))
+        print("test can only be: /break, empty string or integers string")
 
     # In test mode there is no xml sting, should be checked before trying to parse it
     if(not xml == ""):
@@ -51,19 +62,29 @@ def process(test, xml):
 
         # Step 2. Filter the notifications
         ignore = False
-        # Check if the envelope was sent from the test mode 
-        # If sent from test mode - ok to continue even if the status not equals to Completed
-        if(not orderNumber == "Test_Mode"):
-            if(not status == "Completed"):
+        # Guarding against injection attacks
+        # Check the incoming orderNumber variable to ensure that it ONLY contains the expected data ("Test_Mode" or integers string)
+        # Envelope might not have Custom field when orderNumber == None
+        # matcher equals true when it finds wrong input
+        matcher = re.search(pattern, orderNumber)
+        validInput = orderNumber == "Test_Mode" or orderNumber == None or not matcher
+        if(validInput):
+            # Check if the envelope was sent from the test mode
+            # If sent from test mode - ok to continue even if the status not equals to Completed
+            if(not orderNumber == "Test_Mode"):
+                if(not status == "Completed"):
+                    ignore = True
+                    if(ds_config("DEBUG") == "True"):
+                        print(date() +"IGNORED: envelope status is {}".format(status))
+            
+            if(orderNumber == None or orderNumber == ""):
                 ignore = True
                 if(ds_config("DEBUG") == "True"):
-                    print(date() +"IGNORED: envelope status is {}".format(status))
-            
-        if(orderNumber == None or orderNumber == ""):
+                    print(date() +"IGNORED: envelope does not have a {} envelope custom field.".format(ds_config("ENVELOPE_CUSTOM_FIELD")))
+        else:
             ignore = True
-            if(ds_config("DEBUG") == "True"):
-                print(date() +"IGNORED: envelope does not have a {} envelope custom field.".format(ds_config("ENVELOPE_CUSTOM_FIELD")))
-            
+            print(date() + "Wrong orderNumber value: {}".format(orderNumber))
+            print("orderNumber can only be: Test_Mode or integers string")
         # Step 3. (Future) Check that this is not a duplicate notification
         # The queuing system delivers on an "at least once" basis. So there is a 
         # chance that we have already processes this notification.
@@ -92,6 +113,10 @@ def saveDoc(envelopeId, orderNumber):
                 print(date() + "Failed to create directory")
 
         filePath = os.path.join(current_directory, "output",  ds_config("OUTPUT_FILE_PREFIX") + orderNumber + ".pdf")
+        # Cannot create a file when file with the same name already exists
+        if(os.path.exists(filePath)):
+            # Remove the existing file
+            os.remove(filePath)
         # Save the results file in the output directory and change the name of the file
         os.rename(results_file,filePath)
         
