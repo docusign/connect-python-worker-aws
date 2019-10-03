@@ -1,6 +1,6 @@
 # Python: Connect Worker for AWS
 
-Repository: [connect-python-worker-aws](https://github.docusignhq.com/chen-ostrovski/connect-python-worker-aws.git)
+Repository: [connect-python-worker-aws](https://github.com/docusign/connect-python-worker-aws)
 
 ## Introduction
 
@@ -56,6 +56,10 @@ The SDK itself works with Python v2.7 or later.
     ````
     cd connect-python-worker-aws
     pip install docusign_esign
+    # boto3 is the AWS Python SDK
+    pip install boto3
+    # defusedxml is an XML parser with InfoSec fixes
+    pip install defusedxml
     ````
 1. Using AWS IAM, create an IAM `User` with access to your SQS queue.
 
@@ -137,4 +141,4 @@ Contributions via Pull Requests are appreciated.
 All contributions must use the MIT License.
 
 This repository uses the MIT license, see the
-[LICENSE](https://github.com/docusign/eg-01-Python-jwt/blob/master/LICENSE) file.
+[LICENSE](https://github.com/docusign/connect-python-worker-aws/blob/master/LICENSE) file.
